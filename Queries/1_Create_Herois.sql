@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS HEROIS;
+
+CREATE TABLE HEROIS(
+	codigo INT,
+	nome VARCHAR(50),
+	dataNascimento DATE,
+	poder VARCHAR(1000)
+);
