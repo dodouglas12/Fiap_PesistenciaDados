@@ -1,5 +1,6 @@
 ﻿using FIAP_PersistenciaDados.Context;
-using FIAP_PersistenciaDados.Model;
+using FIAP_PersistenciaDados.Interfaces;
+using FIAP_PersistenciaDados.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -9,17 +10,17 @@ namespace FIAP_PersistenciaDados.Controllers
 {
     public class ProdutosController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IProdutoService _produtoService;
 
-        public ProdutosController(AppDbContext context)
+        public ProdutosController(IProdutoService produtoService)
         {
-            _context = context;
+            _produtoService = produtoService;
         }
 
         // GET: Produtos
         public async Task<IActionResult> Index()
         {
-            var produtos = new List<Produto>(); //await _context.Produtos.ToListAsync();
+            var produtos = new List<Produto>(); //await _produtoService.GetAllAsync();
             return View(produtos);
         }
 
@@ -31,9 +32,8 @@ namespace FIAP_PersistenciaDados.Controllers
                 return NotFound();
             }
 
-            var produto = await _context.Produtos
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (produto == null)
+            var produto = await _produtoService.GetAllAsync();
+            if (produto.FirstOrDefault(m => m.Id == id) == null)
             {
                 return NotFound();
             }
@@ -54,8 +54,7 @@ namespace FIAP_PersistenciaDados.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(produto);
-                await _context.SaveChangesAsync();
+                _produtoService.CreateAsync(produto);
                 return RedirectToAction(nameof(Index));
             }
             return View(produto);
@@ -69,8 +68,10 @@ namespace FIAP_PersistenciaDados.Controllers
                 return NotFound();
             }
 
-            var produto = await _context.Produtos.FindAsync(id);
-            if (produto == null)
+            var resultado = await _produtoService.GetAllAsync();
+            var produto = resultado.FirstOrDefault(x => x.Id == id);
+
+            if (produto is null || produto.Id.Equals(0))
             {
                 return NotFound();
             }
@@ -91,12 +92,11 @@ namespace FIAP_PersistenciaDados.Controllers
             {
                 try
                 {
-                    _context.Update(produto);
-                    await _context.SaveChangesAsync();
+                    _produtoService.UpdateByIdAsync(produto);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch
                 {
-                    if (!ProdutoExists(produto.Id))
+                    if (!await ProdutoExists(produto.Id))
                     {
                         return NotFound();
                     }
@@ -118,8 +118,9 @@ namespace FIAP_PersistenciaDados.Controllers
                 return NotFound();
             }
 
-            var produto = await _context.Produtos
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var resultado = await _produtoService.GetAllAsync();
+            var produto = resultado.FirstOrDefault(x => x.Id == id);
+
             if (produto == null)
             {
                 return NotFound();
@@ -133,15 +134,14 @@ namespace FIAP_PersistenciaDados.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var produto = await _context.Produtos.FindAsync(id);
-            _context.Produtos.Remove(produto);
-            await _context.SaveChangesAsync();
+            _produtoService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProdutoExists(int id)
+        private async Task<bool> ProdutoExists(int id)
         {
-            return _context.Produtos.Any(e => e.Id == id);
+            var resultado = await _produtoService.GetAllAsync();
+            return resultado.Any(e => e.Id == id);
         }
     }
 

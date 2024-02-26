@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FIAP_PersistenciaDados.Model
+namespace FIAP_PersistenciaDados.Models
 {
     public class Produto
     {

@@ -1,15 +1,16 @@
-using FIAP_PersistenciaDados.Context;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using FIAP_PersistenciaDados.Interfaces;
+using FIAP_PersistenciaDados.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<IProdutoService, ProdutoService>();
 
-// Configuração da injeção de dependência para o AppDbContext
-builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseNpgsql("Host=host.docker.internal;Database=persistenciadados;Username=postgres;Password=102030"));
+//// Configuração da injeção de dependência para o AppDbContext
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//        options.UseNpgsql("Host=host.docker.internal;Database=persistenciadados;Username=postgres;Password=102030"));
 
 var app = builder.Build();
 

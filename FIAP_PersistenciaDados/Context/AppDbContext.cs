@@ -1,4 +1,4 @@
-﻿using FIAP_PersistenciaDados.Model;
+﻿using FIAP_PersistenciaDados.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
