@@ -1,0 +1,14 @@
+﻿@using FIAP_PersistenciaDados.Model
+@model Produto
+
+<h2>Confirmar Exclusão</h2>
+
+<div>
+    <h4>Nome: @Html.DisplayFor(model => model.Nome)</h4>
+    <h4>Preço: @Html.DisplayFor(model => model.Preco)</h4>
+</div>
+
+<form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+    <input type="submit" value="Confirmar Exclusão" class="btn btn-danger" />
+    <a asp-action="Index">Cancelar</a>
+</form>
