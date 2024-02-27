@@ -1,0 +1,47 @@
+﻿@using FIAP_PersistenciaDados.Models
+@model List<Produto>
+
+<h2>Lista de Produtos</h2>
+
+<p>
+    <a asp-action="Create">Criar Novo</a>
+</p>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Nome
+                </th>
+                <th>
+                    Preço
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var produto in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => produto.Nome)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => produto.Preco)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@produto.Id">Detalhes</a> |
+                        <a asp-action="Edit" asp-route-id="@produto.Id">Editar</a> |
+                        <a asp-action="Delete" asp-route-id="@produto.Id">Excluir</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Nenhum produto encontrado.</p>
+}

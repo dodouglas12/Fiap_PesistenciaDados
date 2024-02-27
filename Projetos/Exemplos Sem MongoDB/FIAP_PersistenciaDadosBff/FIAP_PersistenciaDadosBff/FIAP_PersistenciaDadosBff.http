@@ -1,0 +1,6 @@
+@FIAP_PersistenciaDadosBff_HostAddress = http://localhost:5289
+
+GET {{FIAP_PersistenciaDadosBff_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
