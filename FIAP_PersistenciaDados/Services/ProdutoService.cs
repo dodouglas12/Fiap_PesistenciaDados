@@ -8,7 +8,7 @@ namespace FIAP_PersistenciaDados.Services
     public class ProdutoService : IProdutoService
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private const string URL_API = "https://sua-api.com/api/produtos";
+        private const string URL_API = "https://localhost:7120/api/Produtos/";
 
         public ProdutoService(IHttpClientFactory httpClientFactory)
         {
@@ -18,11 +18,11 @@ namespace FIAP_PersistenciaDados.Services
         public async Task<IList<Produto>> GetAllAsync()
         {
             var httpClient = _httpClientFactory.CreateClient();
-            var response = await httpClient.GetFromJsonAsync<Produto[]>(URL_API);
+            var response = await httpClient.GetFromJsonAsync<Produto[]>(URL_API + "GetAll");
 
             if (response != null)
             {
-                return response;
+                return response.ToList();
             }
             else
             {
@@ -33,19 +33,29 @@ namespace FIAP_PersistenciaDados.Services
         public async void CreateAsync(Produto produto)
         {
             var httpClient = _httpClientFactory.CreateClient();
-            await httpClient.PostAsJsonAsync(URL_API, produto);
+            await httpClient.PostAsJsonAsync(URL_API + "Create", produto);
         }
 
         public async void UpdateByIdAsync(Produto produto)
         {
-            var httpClient = _httpClientFactory.CreateClient();
-            await httpClient.PostAsJsonAsync(URL_API, produto);
+            //var httpClient = _httpClientFactory.CreateClient();
+            //await httpClient.PostAsJsonAsync(URL_API + "Update", produto);
+
+            await ExecutaRequisicaoPadrao("Update", produto);
         }
 
-        public async void DeleteAsync(int id)
+        public async Task DeleteAsync(Produto produto)
         {
             var httpClient = _httpClientFactory.CreateClient();
-            await httpClient.PostAsJsonAsync(URL_API, id);
+            await httpClient.DeleteAsync(URL_API + $"Remove?id={produto.Id}");
+
+            //await ExecutaRequisicaoPadrao("DeleteById", produto);
+        }
+
+        private async Task ExecutaRequisicaoPadrao(string url, Produto produto)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            await httpClient.PostAsJsonAsync(URL_API + url, produto);
         }
     }
 }

@@ -8,10 +8,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IProdutoService, ProdutoService>();
 
-//// Configuração da injeção de dependência para o AppDbContext
-//builder.Services.AddDbContext<AppDbContext>(options =>
-//        options.UseNpgsql("Host=host.docker.internal;Database=persistenciadados;Username=postgres;Password=102030"));
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

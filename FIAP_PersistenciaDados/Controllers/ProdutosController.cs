@@ -20,7 +20,7 @@ namespace FIAP_PersistenciaDados.Controllers
         // GET: Produtos
         public async Task<IActionResult> Index()
         {
-            var produtos = new List<Produto>(); //await _produtoService.GetAllAsync();
+            var produtos = await _produtoService.GetAllAsync();
             return View(produtos);
         }
 
@@ -33,12 +33,12 @@ namespace FIAP_PersistenciaDados.Controllers
             }
 
             var produto = await _produtoService.GetAllAsync();
-            if (produto.FirstOrDefault(m => m.Id == id) == null)
+            if (!produto.Any(m => m.Id == id))
             {
                 return NotFound();
             }
 
-            return View(produto);
+            return View(produto.FirstOrDefault(m => m.Id == id));
         }
 
         // GET: Produtos/Create
@@ -131,10 +131,9 @@ namespace FIAP_PersistenciaDados.Controllers
 
         // POST: Produtos/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, [Bind("Id,Nome,Preco")] Produto produto)
         {
-            _produtoService.DeleteAsync(id);
+            await _produtoService.DeleteAsync(produto);
             return RedirectToAction(nameof(Index));
         }
 

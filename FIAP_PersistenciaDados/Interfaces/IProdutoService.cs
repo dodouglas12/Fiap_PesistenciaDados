@@ -11,6 +11,6 @@ namespace FIAP_PersistenciaDados.Interfaces
 
         public void UpdateByIdAsync(Produto produto);
 
-        public void DeleteAsync(int id);
+        public Task DeleteAsync(Produto produto);
     }
 }
