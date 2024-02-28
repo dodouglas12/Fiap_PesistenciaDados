@@ -1,14 +1,25 @@
 ﻿@using FIAP_PersistenciaDados.Models
-@model Produto
+@model DetalhesViewModel
 
-<h2>Detalhes do Produto</h2>
+<h1>Detalhes do Produto</h1>
 
-<div>
-    <h4>Nome: @Html.DisplayFor(model => model.Nome)</h4>
-    <h4>Preço: @Html.DisplayFor(model => model.Preco)</h4>
-</div>
+<p>Nome: @Model.Produto.Nome</p>
+<p>Preço: @Model.Produto.Preco</p>
+<!-- Outras propriedades do produto -->
+
+<h2>Logs de Alteração de Preço</h2>
+<ul>
+    @foreach (var log in Model.LogsAlteracaoPreco)
+    {
+        <li>
+            Preço Antigo: @log.PrecoAntigo
+            Novo Preço: @log.NovoPreco
+            Data de Alteração: @log.DataAlteracao
+        </li>
+    }
+</ul>
 
 <p>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
+    <a asp-action="Edit" asp-route-id="@Model.Produto.Id">Editar</a> |
     <a asp-action="Index">Voltar para a Lista</a>
 </p>

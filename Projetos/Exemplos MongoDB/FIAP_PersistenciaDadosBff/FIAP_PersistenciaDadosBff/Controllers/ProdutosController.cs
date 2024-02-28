@@ -51,5 +51,19 @@ namespace FIAP_PersistenciaDadosBff.Controllers
             await _produtoService.UpdateAsync(produto);
             return Ok(produto);
         }
+
+        [HttpPost("UpdateComLog")]
+        public async Task<IActionResult> UpdateComLogAsync(Produto produto)
+        {
+            await _produtoService.AtualizarPrecoProduto(produto.Id, produto.Preco);
+            return Ok(produto);
+        }
+
+        [HttpGet("RetornarLogs")]
+        public async Task<IActionResult> RetornarLogs([FromQuery] int id)
+        {
+            var resultado = await _produtoService.ObterLogsAlteracaoPreco(id);
+            return Ok(resultado);
+        }
     }
 }

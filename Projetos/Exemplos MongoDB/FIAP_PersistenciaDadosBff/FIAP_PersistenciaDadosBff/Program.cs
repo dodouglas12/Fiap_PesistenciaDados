@@ -1,6 +1,7 @@
 using FIAP_PersistenciaDadosBff.Interfaces;
 using FIAP_PersistenciaDadosBff.Repositoty;
 using FIAP_PersistenciaDadosBff.Services;
+using MongoDB.Driver;
 using Npgsql;
 using System.Data;
 
@@ -17,12 +18,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
-builder.Services.AddScoped<IProdutoService, ProdutoService>();
-
 //Realização a injeção de dependência do nosso BD
 var connectionString = configuration.GetValue<string>("ConnectionStringPostgres");
 builder.Services.AddScoped<IDbConnection>((connection) => new NpgsqlConnection(connectionString));
+
+// Configuração para MongoDB
+var connectionMongo = configuration.GetValue<string>("MongoConnection");
+builder.Services.AddScoped<IMongoClient>(serviceProvider => new MongoClient(connectionMongo));
+
+builder.Services.AddScoped<ILogAlteracaoPrecoService, LogAlteracaoPrecoService>();
+builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
+builder.Services.AddScoped<IProdutoService, ProdutoService>();
 
 var app = builder.Build();
 

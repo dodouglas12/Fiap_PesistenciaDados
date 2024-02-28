@@ -6,10 +6,13 @@ namespace FIAP_PersistenciaDadosBff.Services
     public class ProdutoService : IProdutoService
     {
         private readonly IProdutoRepository _produtoRepository;
+        private readonly ILogAlteracaoPrecoService _logAlteracaoPrecoService;
 
-        public ProdutoService(IProdutoRepository produtoRepository)
+        public ProdutoService(IProdutoRepository produtoRepository, 
+                              ILogAlteracaoPrecoService logAlteracaoPrecoService)
         {
             _produtoRepository = produtoRepository;
+            _logAlteracaoPrecoService = logAlteracaoPrecoService;
         }
 
         public async Task CreateAsync(Produto produto)
@@ -30,6 +33,26 @@ namespace FIAP_PersistenciaDadosBff.Services
         public async Task UpdateAsync(Produto produto)
         {
             await _produtoRepository.UpdateAsync(produto);
+        }
+        
+        //********************************************************************
+        //Métodos relacionados ao Mongo
+        public async Task AtualizarPrecoProduto(int produtoId, decimal novoPreco)
+        {
+            // Lógica para atualizar o preço do produto
+            var produto = (await GetAllAsync()).FirstOrDefault(x => x.Id.Equals(produtoId));
+            var precoAntigo = produto.Preco;
+            
+            produto.Preco = novoPreco;
+            await UpdateAsync(produto);
+
+            // Registra um log de alteração de preço
+            await _logAlteracaoPrecoService.RegistrarLogAlteracaoPreco(produtoId, precoAntigo, novoPreco);
+        }
+
+        public async Task<List<LogAlteracaoPreco>> ObterLogsAlteracaoPreco(int produtoId)
+        {
+            return await _logAlteracaoPrecoService.ObterLogsPorProduto(produtoId);
         }
     }
 }

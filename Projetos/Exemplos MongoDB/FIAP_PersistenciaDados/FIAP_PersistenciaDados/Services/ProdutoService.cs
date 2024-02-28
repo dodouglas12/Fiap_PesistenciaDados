@@ -38,24 +38,29 @@ namespace FIAP_PersistenciaDados.Services
 
         public async void UpdateByIdAsync(Produto produto)
         {
-            //var httpClient = _httpClientFactory.CreateClient();
-            //await httpClient.PostAsJsonAsync(URL_API + "Update", produto);
-
-            await ExecutaRequisicaoPadrao("Update", produto);
+            var httpClient = _httpClientFactory.CreateClient();
+            await httpClient.PostAsJsonAsync(URL_API + "Update", produto);
         }
 
         public async Task DeleteAsync(Produto produto)
         {
             var httpClient = _httpClientFactory.CreateClient();
             await httpClient.DeleteAsync(URL_API + $"Remove?id={produto.Id}");
-
-            //await ExecutaRequisicaoPadrao("DeleteById", produto);
         }
 
-        private async Task ExecutaRequisicaoPadrao(string url, Produto produto)
+        public async Task<List<LogAlteracaoPreco>> RetornarLogsAsync(int? id)
         {
             var httpClient = _httpClientFactory.CreateClient();
-            await httpClient.PostAsJsonAsync(URL_API + url, produto);
+            var response = await httpClient.GetAsync(URL_API + $"RetornarLogs?id={id}");
+
+            if (response != null)
+            {
+                return await response.Content.ReadFromJsonAsync<List<LogAlteracaoPreco>>();
+            }
+            else
+            {
+                return new List<LogAlteracaoPreco>();
+            }
         }
     }
 }

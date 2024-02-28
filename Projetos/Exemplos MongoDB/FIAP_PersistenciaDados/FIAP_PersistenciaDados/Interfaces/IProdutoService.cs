@@ -12,5 +12,7 @@ namespace FIAP_PersistenciaDados.Interfaces
         public void UpdateByIdAsync(Produto produto);
 
         public Task DeleteAsync(Produto produto);
+
+        public Task<List<LogAlteracaoPreco>> RetornarLogsAsync(int? id);
     }
 }

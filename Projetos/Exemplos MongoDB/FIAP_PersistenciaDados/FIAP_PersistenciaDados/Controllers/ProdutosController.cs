@@ -34,7 +34,15 @@ namespace FIAP_PersistenciaDados.Controllers
                 return NotFound();
             }
 
-            return View(produto.FirstOrDefault(m => m.Id == id));
+            var logsAlteracaoPreco = await _produtoService.RetornarLogsAsync(id);
+
+            var viewModel = new DetalhesViewModel
+            {
+                Produto = produto.FirstOrDefault(m => m.Id == id),
+                LogsAlteracaoPreco = logsAlteracaoPreco
+            };
+
+            return View(viewModel);
         }
 
         // GET: Produtos/Create
